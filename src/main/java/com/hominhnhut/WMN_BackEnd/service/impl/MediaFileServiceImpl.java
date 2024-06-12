@@ -1,12 +1,12 @@
 package com.hominhnhut.WMN_BackEnd.service.impl;
 
-import com.hominhnhut.WMN_BackEnd.domain.enity.Episode;
 import com.hominhnhut.WMN_BackEnd.domain.enity.MediaFile;
+import com.hominhnhut.WMN_BackEnd.domain.enity.Product;
 import com.hominhnhut.WMN_BackEnd.domain.enity.UserProfile;
 import com.hominhnhut.WMN_BackEnd.exception.errorType;
 import com.hominhnhut.WMN_BackEnd.exception.myException.AppException;
-import com.hominhnhut.WMN_BackEnd.repository.EpisodeRepository;
 import com.hominhnhut.WMN_BackEnd.repository.MediaFileRepository;
+import com.hominhnhut.WMN_BackEnd.repository.ProductRepository;
 import com.hominhnhut.WMN_BackEnd.repository.UserProfileRepository;
 import com.hominhnhut.WMN_BackEnd.service.Interface.CloudinaryService;
 import com.hominhnhut.WMN_BackEnd.service.Interface.MediaFileService;
@@ -26,8 +26,10 @@ import java.util.Map;
 public class MediaFileServiceImpl implements MediaFileService {
 
     MediaFileRepository mediaFileRepository;
-    EpisodeRepository episodeRepository;
     UserProfileRepository userProfileRepository;
+
+    ProductRepository productRepository;
+
     CloudinaryService cloudinaryService;
 
 
@@ -65,18 +67,35 @@ public class MediaFileServiceImpl implements MediaFileService {
         this.mediaFileRepository.saveAndFlush(mediaFile);
 
         userProfile.setMediaFile(mediaFile);
+        System.out.println("đã them6" + userProfile.getMediaFile());
         this.userProfileRepository.save(userProfile);
         return mediaFile;
     }
 
     @Override
-    public MediaFile uploadVideoToEpisode(MultipartFile file, String episodeId) {
-        Episode episode = episodeRepository.findById(episodeId).orElseThrow(
-                () -> new AppException(errorType.notFound)
+    public MediaFile uploadFileToProduct(MultipartFile file, String productId) {
+        // Kiêm tra Productt Tôn tại
+        Product product = productRepository.findById(productId).orElseThrow(
+                () -> new AppException(errorType.ProductIdNotFound)
         );
-        // Tìm thấy Episode tồn tại
-        Map result = cloudinaryService.uploadVideo(file);
-        // Tạo ra MediaFile từ Response mà Cloudinary trả về
+        Map result = this.cloudinaryService.uploadImage(file);
+
+        MediaFile fileExist = product.getImage();
+        System.out.println(fileExist);
+        // Kiểm tra File đã tồn tại hay chưa
+        if (fileExist != null) {
+            // Xóa trên Cloudinary
+            try {
+                this.cloudinaryService.delete(fileExist.getMediaFileID());
+                System.out.println("đã xóa trên Cloundinary");
+                product.setImage(null);
+                this.mediaFileRepository.deleteById(fileExist.getMediaFileID());
+                System.out.println("đã xóa trên Database");
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
         MediaFile mediaFile = new MediaFile();
         mediaFile.setMediaFileID(result.get("public_id").toString());
         mediaFile.setMediaFilePath(result.get("url").toString());
@@ -84,14 +103,13 @@ public class MediaFileServiceImpl implements MediaFileService {
         mediaFile.setMediaFileType(result.get("resource_type").toString());
         mediaFile.setCreateAt(new Date());
 
-        // Thêm Media vào csdl
-        mediaFile =  mediaFileRepository.saveAndFlush(mediaFile);
+        mediaFileRepository.saveAndFlush(mediaFile);
 
-        // Cập nhật MediaFile của Episode
-        episode.setEpisodeFile(mediaFile);
-        // Lưu
-        episodeRepository.save(episode);
+        product.setImage(mediaFile);
+        productRepository.save(product);
+
         return mediaFile;
     }
+
 
 }

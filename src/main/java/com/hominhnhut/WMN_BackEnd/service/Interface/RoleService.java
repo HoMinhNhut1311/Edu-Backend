@@ -2,6 +2,7 @@ package com.hominhnhut.WMN_BackEnd.service.Interface;
 
 import com.hominhnhut.WMN_BackEnd.domain.request.RoleDtoRequest;
 import com.hominhnhut.WMN_BackEnd.domain.response.RoleDtoResponse;
+import com.hominhnhut.WMN_BackEnd.domain.response.UserDtoResponse;
 
 import java.util.List;
 import java.util.Set;
@@ -19,5 +20,6 @@ public interface RoleService {
     Set<RoleDtoResponse> getRoleOverview();
 
     void delete(Integer idDelete);
+
 }
 

@@ -65,7 +65,12 @@ public class RoleServiceImpl implements RoleService {
 
         Set<RoleDtoResponse> roleDtoResponses = new HashSet<>();
         roles.forEach((role) -> {
-            RoleDtoResponse response = roleRepository.getRoleResponseByRoleId(role.getRoleId());
+            RoleDtoResponse response = new RoleDtoResponse();
+            response.setRoleName(role.getRoleName());
+            response.setDescription(role.getDescription());
+            response.setRoleId(role.getRoleId());
+            response.setCount(roleRepository.
+                    getCountUserByRoleId(role.getRoleId()));
             roleDtoResponses.add(response);
         });
         return roleDtoResponses;

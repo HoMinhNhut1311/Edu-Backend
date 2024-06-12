@@ -17,13 +17,12 @@ spring:
     url: jdbc:postgresql://localhost:5432/mydb
   application:
     name: HoMinhNhut
-  servlet:
-    multipart:
-      max-file-size: 50MB
-      max-request-size: 50MB
 
 
 server:
   port: 1311
   servlet:
     context-path: /mnw
+
+asm :
+  key : c29tZSByYW5kb20gc3RyaW5nIGVuY29kZWQgaW4gQmFzZTY0

@@ -1,19 +1,20 @@
 package com.hominhnhut.WMN_BackEnd.service.Interface;
 
 import com.hominhnhut.WMN_BackEnd.domain.enity.Category;
+import org.springframework.stereotype.Service;
 
 import java.util.Set;
 
+@Service
 public interface CategoryService {
 
     Category saveCategory(Category category);
 
-    void deleteCategoryById(Integer categoryId);
+    Category updateCategory(String categoryId, Category category);
 
-    Category updateCategory(Category category, Integer categoryId);
+    void deleteCategory(String categoryId);
 
-    Set<Category> selectAllCategory();
+    Set<Category> getAllCategory();
 
-    Category selectCategoryById(Integer id);
-
+    Category getCategoryById(String categoryId);
 }

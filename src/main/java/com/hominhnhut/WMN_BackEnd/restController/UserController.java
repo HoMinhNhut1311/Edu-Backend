@@ -2,13 +2,19 @@ package com.hominhnhut.WMN_BackEnd.restController;
 
 import com.hominhnhut.WMN_BackEnd.domain.request.UserDtoRequest;
 import com.hominhnhut.WMN_BackEnd.domain.response.UserDtoResponse;
+import com.hominhnhut.WMN_BackEnd.service.Interface.PageService;
 import com.hominhnhut.WMN_BackEnd.service.Interface.UserService;
 import com.hominhnhut.WMN_BackEnd.service.impl.PageServiceImpl;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
+//import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.access.prepost.PostAuthorize;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,11 +23,12 @@ import java.util.Set;
 @CrossOrigin(origins = "http://localhost:5173/")
 @RestController
 @RequestMapping("/user")
+@Slf4j
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class UserController {
 
    UserService userService;
-   PageServiceImpl pageService;
+   PageService pageService;
 
     public UserController(UserService userService, PageServiceImpl pageService) {
         this.userService = userService;
@@ -31,7 +38,7 @@ public class UserController {
     @GetMapping("/")
     public ResponseEntity<
          List<UserDtoResponse>> getAllUser() {
-
+        log.info("hello");
         List<UserDtoResponse> userDtoResponses = this.userService.getAll();
         return ResponseEntity.ok(userDtoResponses);
     }
@@ -102,6 +109,7 @@ public class UserController {
                 this.pageService.getPageUserByRoleId(pageNumber,pageSize,roleId);
         return ResponseEntity.ok(listUserDto);
     }
+
 
 
 

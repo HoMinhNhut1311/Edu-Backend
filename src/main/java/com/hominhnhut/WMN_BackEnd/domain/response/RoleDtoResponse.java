@@ -15,6 +15,6 @@ public class RoleDtoResponse {
    Integer roleId;
    String roleName;
    String description;
-   Integer count;
+   Integer count = 0;
 
 }

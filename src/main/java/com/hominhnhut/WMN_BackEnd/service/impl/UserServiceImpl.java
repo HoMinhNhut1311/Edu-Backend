@@ -15,8 +15,12 @@ import com.hominhnhut.WMN_BackEnd.service.Interface.UserService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.prepost.PostAuthorize;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
@@ -27,6 +31,7 @@ import java.util.stream.Collectors;
 @Service
 @FieldDefaults(makeFinal = true,level = AccessLevel.PRIVATE)
 @RequiredArgsConstructor
+@Slf4j
 public class UserServiceImpl implements UserService {
 
     UserRepository userRepository;
@@ -35,13 +40,21 @@ public class UserServiceImpl implements UserService {
 
     MyMapperInterFace<UserDtoRequest, User, UserDtoResponse> userMapper;
 
-
+    @PostAuthorize("hasRole('ADMIN')")
     public List<UserDtoResponse> getAll() {
+        log.info("In method Get All");
+        var securityContext = SecurityContextHolder.getContext().getAuthentication();
+        System.out.println("Username : "+securityContext.getName());
+        securityContext.getAuthorities().forEach((grand) -> {
+            log.info(grand.getAuthority());
+        });
+        securityContext.getAuthorities().forEach((grand) -> {
+
+        });
         return this.userRepository.findAll().stream()
               .map(this.userMapper::mapToResponese).
               collect(Collectors.toList());
     }
-
     public UserDtoResponse findById(String id) {
         User user = this.userRepository.findById(id).orElseThrow(()
                 -> new AppException(errorType.notFound)
@@ -120,6 +133,14 @@ public class UserServiceImpl implements UserService {
                 this.userRepository.findAllByUsernameContaining(usernameContain,pageable).stream()
                         .map(this.userMapper::mapToResponese).toList()
         );
+    }
+
+    @Override
+    public UserDtoResponse getUserByUsername(String username) {
+        userRepository.findUSerByUsername(username).orElseThrow(
+                () -> new AppException(errorType.userNameNotExist)
+        );
+        return null;
     }
 
 

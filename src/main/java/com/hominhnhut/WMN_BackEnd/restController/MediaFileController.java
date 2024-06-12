@@ -21,7 +21,7 @@ public class MediaFileController {
         this.mediaFileService = myFileService;
     }
 
-        @PostMapping("/profile/{profileId}")
+    @PostMapping("/profile/{profileId}")
     public ResponseEntity<MediaFile> uploadImageToProfile(
             @RequestParam("image") MultipartFile file,
             @PathVariable("profileId") String profileID
@@ -30,12 +30,16 @@ public class MediaFileController {
         return ResponseEntity.ok(mediaFile);
     }
 
-    @PostMapping("/episode/{episodeId}")
-    public ResponseEntity<MediaFile> uploadVideoToEpisode(
-            @RequestParam("video") MultipartFile fileVideo,
-            @PathVariable("episodeId") String episodeId
+    @PostMapping("/product/{productId}")
+    public ResponseEntity<MediaFile> uploadImageToProduct (
+            @RequestParam("image") MultipartFile file,
+            @PathVariable("productId") String productId
     ) {
-        MediaFile mediaFile = mediaFileService.uploadVideoToEpisode(fileVideo, episodeId);
+        MediaFile mediaFile = mediaFileService.uploadFileToProduct(file, productId);
         return ResponseEntity.ok(mediaFile);
     }
+
+
+
+
 }

@@ -18,9 +18,13 @@ public interface RoleRepository extends JpaRepository<Role, Integer> {
     @Query(name = "GetRoleDtoResponse",nativeQuery = true)
     RoleDtoResponse getRoleResponseByRoleId(@Param("role_id") Integer roleId);
 
+
+    @Query(value = "select count(users_roles.user_id) " +
+            "from users_roles where users_roles.role_id = :roleId", nativeQuery = true)
+    Integer getCountUserByRoleId(@Param("roleId") Integer roleID);
+
     @Query(value = "SELECT COUNT(user_id) from users_roles",nativeQuery = true)
     Integer getCountUser();
-
 
 
 }

@@ -23,7 +23,6 @@ public class UserProFileController {
         this.userProfileService = userProfileService;
     }
 
-
     @GetMapping("/")
     public ResponseEntity<
                     List<UserDtoResponse>> getAllUser() {

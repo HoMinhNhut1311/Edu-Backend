@@ -57,6 +57,7 @@ public class UserProfileServiceImpl implements UserProfileService {
             );
             UserProfile updateProfile = this.profileMapper.mapFromRequest(request);
             updateProfile.setProfileId(idUpdate);
+            updateProfile.setMediaFile(profile.getMediaFile());
             return this.profileMapper.
                 mapToResponese(this.profileRepository.save(updateProfile));
     }
