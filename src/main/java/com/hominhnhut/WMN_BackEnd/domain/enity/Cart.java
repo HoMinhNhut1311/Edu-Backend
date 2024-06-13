@@ -3,6 +3,7 @@ package com.hominhnhut.WMN_BackEnd.domain.enity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
@@ -19,13 +20,13 @@ public class Cart {
     @GeneratedValue(strategy = GenerationType.UUID)
     private String cartId;
 
-    private LocalDateTime localDateTime;
+    private LocalDate localDate;
 
     private boolean status;
 
     @ManyToOne
     @JoinColumn(name = "userId")
-    User customer;
+    User user;
 
     @ManyToMany
     @JoinTable(
